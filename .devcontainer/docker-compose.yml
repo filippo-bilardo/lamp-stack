@@ -1,50 +1,54 @@
 version: '3.8'
 
 services:
-  web:
-    image: php:8.2-apache
+  php-apache:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    container_name: lamp-php-apache
     ports:
       - "80:80"
     volumes:
-      - .:/workspace
-      - ./web:/var/www/html
-    command: >
-      bash -c "docker-php-ext-install mysqli pdo pdo_mysql &&
-               a2enmod rewrite &&
-               apache2-foreground"
+      - ../www:/var/www/html
     depends_on:
-      - db
+      - mysql
     networks:
       - lamp-network
 
-  db:
+  mysql:
     image: mysql:8.0
+    container_name: lamp-mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: lamp_db
-      MYSQL_USER: lamp_user
-      MYSQL_PASSWORD: lamp_password
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpass
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - lamp-network
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: lamp-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
     ports:
       - "8080:80"
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
     depends_on:
-      - db
+      - mysql
     networks:
       - lamp-network
 
 volumes:
-  db-data:
+  mysql-data:
 
 networks:
   lamp-network:
+    driver: bridge
