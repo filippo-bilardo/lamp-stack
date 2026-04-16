@@ -2,10 +2,9 @@
     "name": "LAMP Stack",
     "dockerComposeFile": "docker-compose.yml",
     "service": "web",
-    "workspaceFolder": "/var/www/html",
+    "workspaceFolder": "/workspace",
     "shutdownAction": "stopCompose",
-    "remoteUser": "www-data",
-    "postCreateCommand": "sudo mkdir -p /var/www/html && sudo chown -R www-data:www-data /var/www/html && sudo a2enmod rewrite && sudo service apache2 restart",
+    "remoteUser": "root",
     "customizations": {
         "vscode": {
             "extensions": [
