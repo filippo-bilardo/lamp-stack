@@ -1,23 +1,16 @@
 {
   "name": "LAMP Stack Lab",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "php-apache",
-  "workspaceFolder": "/var/www/html",
+  "image": "php:8.2-apache",
   
   "customizations": {
     "vscode": {
       "extensions": [
-        "bmewburn.vscode-intelephense-client",
-        "ms-azuretools.vscode-docker",
-        "eamodio.gitlens"
-      ],
-      "settings": {
-        "php.validate.executablePath": "/usr/local/bin/php"
-      }
+        "bmewburn.vscode-intelephense-client"
+      ]
     }
   },
   
-  "forwardPorts": [80, 3306],
+  "forwardPorts": [80],
   
-  "postCreateCommand": "apt-get update && apt-get install -y git docker.io && git --version && docker --version"
+  "postCreateCommand": "echo 'Container ready!'"
 }
