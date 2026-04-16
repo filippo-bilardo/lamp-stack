@@ -1,24 +1,22 @@
 FROM php:8.2-apache
 
-# Abilita mod_rewrite di Apache
+# Abilita mod_rewrite
 RUN a2enmod rewrite
 
-# Installa estensioni PHP necessarie per MySQL e altri tool
+# Installa estensioni PHP per MySQL
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Installa strumenti utili per lo sviluppo
+# Strumenti utili e sudo (necessario per postCreateCommand)
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    vim \
-    unzip \
+    git curl vim unzip sudo \
     && rm -rf /var/lib/apt/lists/*
 
-# Copia la configurazione personalizzata di Apache (opzionale)
-COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+# Permetti a www-data di eseguire sudo senza password
+RUN echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# Imposta la directory di lavoro
+# Crea la directory di lavoro (previene errori di mount)
+RUN mkdir -p /var/www/html && chown -R www-data:www-data /var/www/html
+
 WORKDIR /var/www/html
 
-# Espone la porta 80
 EXPOSE 80
