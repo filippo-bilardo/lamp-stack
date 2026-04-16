@@ -1,17 +1,23 @@
 {
-    "name": "LAMP Stack",
-    "dockerComposeFile": "docker-compose.yml",
-    "service": "web",
-    "workspaceFolder": "/workspace",
-    "shutdownAction": "stopCompose",
-    "remoteUser": "root",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "bmewburn.vscode-intelephense-client",
-                "xdebug.php-debug"
-            ]
-        }
-    },
-    "forwardPorts": [80, 8080]
+  "name": "LAMP Stack Lab",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "php-apache",
+  "workspaceFolder": "/var/www/html",
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "php.validate.executablePath": "/usr/local/bin/php"
+      }
+    }
+  },
+  
+  "forwardPorts": [80, 3306],
+  
+  "postCreateCommand": "apt-get update && apt-get install -y git docker.io && git --version && docker --version"
 }
