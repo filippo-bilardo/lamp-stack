@@ -2,13 +2,16 @@ version: '3.8'
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
+    image: php:8.2-apache
     ports:
       - "80:80"
     volumes:
-      - ../web:/var/www/html
+      - .:/workspace
+      - ./web:/var/www/html
+    command: >
+      bash -c "docker-php-ext-install mysqli pdo pdo_mysql &&
+               a2enmod rewrite &&
+               apache2-foreground"
     depends_on:
       - db
     networks:
@@ -16,7 +19,6 @@ services:
 
   db:
     image: mysql:8.0
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: lamp_db
@@ -31,13 +33,11 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    restart: unless-stopped
     ports:
       - "8080:80"
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
-      PMA_ARBITRARY: 1
     depends_on:
       - db
     networks:
@@ -48,4 +48,3 @@ volumes:
 
 networks:
   lamp-network:
-    driver: bridge
